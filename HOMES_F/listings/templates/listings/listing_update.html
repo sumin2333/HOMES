@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Document
+{% endblock %}
+
+{% block content %}
+<body>
+    <h2>매물 수정하기</h2>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">수정 저장</button>
+</form>
+<a href="{% url 'listing_detail' listing.id %}" class="btn btn-secondary" style="margin-top: 10px;">취소</a>
+
+</body>
+{% endblock %}

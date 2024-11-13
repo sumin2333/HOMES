@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Document
+{% endblock %}
+
+{% block content %}
+<body>
+    <h2>내 매물 목록</h2>
+
+<!-- 매물 목록 보여주기 -->
+{% if listings %}
+    <ul>
+        {% for listing in listings %}
+            <li>
+                <a href="{% url 'listing_detail' listing.id %}">{{ listing.title }} - {{ listing.주소 }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>등록된 매물이 없습니다.</p>
+{% endif %}
+
+<a href="{% url 'supply' %}" class="btn btn-primary">매물 등록하기</a>
+</body>
+{% endblock %}

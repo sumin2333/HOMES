@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}
+        내 매물 확인하기
+{% endblock %}
+
+{% block content %}
+<body>
+    <!-- 성공 메시지 표시 -->
+    <h2>성공적으로 등록되었습니다!</h2>
+    {% if messages %}
+        <div class="alert alert-success">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <h2>내 매물 목록</h2>
+
+    <!-- 매물 목록 보여주기 -->
+    <form method="POST" style="display: inline;">
+        {% csrf_token %}
+     
+        <a href="{% url 'my_listings_only' %}" class="btn btn-primary" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; display: inline-block;">
+            내 매물 확인하기
+        </a>
+        <a href="{% url 'supply' %}" class="btn btn-primary" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; display: inline-block;">
+        매물 등록하기
+        </a>
+        <!-- 다른 사용자의 모든 매물 보기 버튼 -->
+        <a href="{% url 'all_listings' %}" class="btn btn-success" style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 10px;">
+        모든 매물 보기
+        </a>
+        
+    </form>
+
+    <!-- POST 요청으로 보내는 매물 목록 -->
+    {% if listings %}
+        <h3>내 매물 목록</h3>
+        <ul>
+            {% for listing in listings %}
+                <li>
+                    <a href="{% url 'listing_detail' listing.id %}">{{ listing.title }} - {{ listing.주소 }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>등록된 매물이 없습니다.</p>
+    {% endif %}
+
+   
+   
+  
+</body>
+{% endblock %}

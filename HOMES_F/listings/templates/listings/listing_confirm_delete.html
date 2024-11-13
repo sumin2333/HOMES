@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+        Document
+{% endblock %}
+
+    
+{% block content %}
+
+<body>
+    <h2>매물 삭제하기</h2>
+<p>정말로 "{{ listing.title }}" 매물을 삭제하시겠습니까?</p>
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">삭제</button>
+    <a href="{% url 'listing_detail' listing.id %}" class="btn btn-secondary" style="margin-left: 10px;">취소</a>
+</form>
+
+</body>
+{% endblock %}

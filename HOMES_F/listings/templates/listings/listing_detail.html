@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    {{ listing.title }}- {{ listing.주소 }}
+{% endblock %}
+
+
+{% block content %}
+<body>
+    <h2>{{ listing.title }}</h2>
+    <p>집 형태: {{ listing.get_house_type_display }}</p>
+    <p>거래 유형: {{ listing.get_transaction_type_display }}</p>
+    <p>주소: {{ listing.주소 }}</p>
+    <p>가격: {{ listing.가격 }} 원</p>
+    <p>면적: {{ listing.면적 }} 평</p>
+    <p>방: {{ listing.방 }}개</p>
+    <p>욕실: {{ listing.욕실 }}개</p>
+    <p>건물연식: {{ listing.건물연식 }}년</p>
+    <p>기타사항: {{ listing.기타사항 }}</p>
+    <p>주변환경: {{ listing.주변환경 }}</p>
+    <p>주차공간: {{ listing.주차공간여부 }}</p>
+    
+
+    <!-- 사진 업로드 폼 -->
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label for="image1">사진 추가 (최대 7장):</label>
+
+        <!-- 이미지 1 업로드 -->
+        <input type="file" id="image1" name="image1" required onchange="previewImage(event, 'imagePreview1')" style="display: none;">
+        <label for="image1" class="custom-file-upload">이미지 1 선택</label>
+        <img id="imagePreview1" class = 'imagePreview' style="max-width: 200px; display: none; margin-top: 10px;" /> 
+        
+        <!-- 이미지 2 업로드 -->
+        <input type="file" id="image2" name="image2" required onchange="previewImage(event, 'imagePreview2')" style="display: none;">
+        <label for="image2" class="custom-file-upload">이미지 2 선택</label>
+        <img id="imagePreview2" class="imagePreview" style="max-width: 200px; display: none; margin-top: 10px;" />
+
+        <!-- 이미지 3 업로드 -->
+        <input type="file" id="image3" name="image3" required onchange="previewImage(event, 'imagePreview3')" style="display: none;">
+        <label for="image3" class="custom-file-upload">이미지 3 선택</label>
+        <img id="imagePreview3" class="imagePreview" style="max-width: 200px; display: none; margin-top: 10px;" />
+
+        <!-- 이미지 4 업로드 -->
+        <input type="file" id="image4" name="image4" required onchange="previewImage(event, 'imagePreview4')" style="display: none;">
+        <label for="image4" class="custom-file-upload">이미지 4 선택</label>
+        <img id="imagePreview4" class="imagePreview" style="max-width: 200px; display: none; margin-top: 10px;" />
+
+        <!-- 이미지 5 업로드 -->
+        <input type="file" id="image5" name="image5" required onchange="previewImage(event, 'imagePreview5')" style="display: none;">
+        <label for="image5" class="custom-file-upload">이미지 5 선택</label>
+        <img id="imagePreview5" class="imagePreview" style="max-width: 200px; display: none; margin-top: 10px;" />
+
+        <!-- 이미지 6 업로드 -->
+        <input type="file" id="image6" name="image6" required onchange="previewImage(event, 'imagePreview6')" style="display: none;">
+        <label for="image6" class="custom-file-upload">이미지 6 선택</label>
+        <img id="imagePreview6" class="imagePreview" style="max-width: 200px; display: none; margin-top: 10px;" />
+
+        <!-- 이미지 7 업로드 -->
+        <input type="file" id="image7" name="image7" required onchange="previewImage(event, 'imagePreview7')" style="display: none;">
+        <label for="image7" class="custom-file-upload">이미지 7 선택</label>
+        <img id="imagePreview7" class="imagePreview" style="max-width: 200px; display: none; margin-top: 10px;" />
+
+        <button type="submit" class="btn btn-primary" style="margin-top: 20px;">사진 업로드</button>
+    
+    <!-- 업로드된 사진 보여주기 -->
+{% if images %}
+    <h3>업로드된 사진:</h3>
+    <div style="display: flex; flex-wrap: wrap;">
+        {% for image in images %}
+            <div style="margin: 10px;"></div>
+                <img src="{{ image.image.url }}" alt="{{ listing.title }}" style="max-width: 200px; margin: 10px;">
+            </div>        
+        {% endfor %}
+    </div>
+{% endif %}
+
+ <!-- 저장 버튼 -->
+ <button type="submit" class="btn btn-primary" style="margin-top: 20px;">사진 저장</button>
+</form>
+
+{% if error_message %}
+<p style="color: red;">{{ error_message }}</p>
+{% endif %}
+
+<!-- 수정 및 삭제 버튼 -->
+<div style="margin-top: 20px;">
+    <a href="{% url 'listing_update' listing.id %}" class="btn btn-warning" style="margin-right: 10px;">수정</a>
+    <a href="{% url 'listing_delete' listing.id %}" class="btn btn-danger" onclick="return confirm('정말로 삭제하시겠습니까?');">삭제</a>
+</div>
+
+<!-- 이전 매물 및 다음 매물 버튼 -->
+<div style="margin-top: 20px;">
+    {% if previous_listing %}
+        <a href="{% url 'listing_detail' previous_listing.id %}" class="btn btn-secondary" style="margin-right: 10px;">이전 매물</a>
+    {% endif %}
+    {% if next_listing %}
+        <a href="{% url 'listing_detail' next_listing.id %}" class="btn btn-primary">다음 매물</a>
+    {% endif %}
+</div>
+</body>
+
+<script>
+function previewImage(event, previewId) {
+    const imagePreview = document.getElementById(previewId);
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = 'block'; // 미리보기 이미지 표시
+        }
+        reader.readAsDataURL(file); // 파일을 Data URL로 읽기
+    } else {
+        imagePreview.style.display = 'none'; // 파일이 없으면 미리보기 숨기기
+    }
+}
+</script>
+{% endblock %}
+
